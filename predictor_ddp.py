@@ -4,7 +4,6 @@ import torch
 from torch.utils.data import DataLoader
 import torch.multiprocessing as mp
 from models.unet import Unet
-from models.swinir import SwinIR
 import numpy as np
 from skimage import io
 import os
@@ -17,7 +16,6 @@ class pred_net():
         self.checkpoint_path = checkpoint_path
         self.checkpoint_idx = checkpoint_idx
         self.model = Unet(filter_base=32, unet_depth=3)
-        # self.model = SwinIR(img_size=63, window_size=7, upscale=1, in_chans=1, upsampler='')
         self.bs = bs
         self.data_path = data_path
         self.patch_size = patch_size

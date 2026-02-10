@@ -4,7 +4,6 @@ import os
 import json
 import math
 from models.unet import Unet
-from models.swinir import SwinIR
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader

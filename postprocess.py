@@ -9,7 +9,7 @@ class output_generator():
         self.checkpoint_idx = checkpoint_idx
         self.prediction_path = prediction_path
         self.data_path = data_path
-        self.ensembles = [d for d in os.listdir(opt.prediction_path) if d.startswith('ensemble')]
+        self.ensembles = [d for d in os.listdir(self.prediction_path) if d.startswith('ensemble')]
 
         self.x_coord = np.genfromtxt(os.path.join(self.data_path, 'x_coord.csv'), delimiter=',')
         self.t2r_list = [io.imread(os.path.join(self.prediction_path, f'{e}', f't2r_{self.checkpoint_idx}.tif')) for e in self.ensembles]
