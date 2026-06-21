@@ -268,7 +268,7 @@ class data_generator():
         # plt.xlabel('trace column index')
         # plt.ylabel('retrace column index')
 
-        f, ax = plt.subplots(1,3, figsize=(3,9))
+        f, ax = plt.subplots(1,3, figsize=(9,3))
         ax[0].scatter(xx, yy-xx, c=ww, alpha=ww, marker=',')
         ax[0].plot(x_eval, y_eval)
         ax[0].set_xlabel('trace column index')
