@@ -66,7 +66,11 @@ class DecoderBlock(nn.Module):
         for k, op in self.module_dict.items():
             x=op(x)
             if k.startswith("up"):
-                x = torch.cat((down_sampling_features.pop(), x), dim=1)
+                skip = down_sampling_features.pop()
+                # Interpolate skip connection if spatial dims do not match
+                if skip.shape[2:] != x.shape[2:]:
+                    skip = torch.nn.functional.interpolate(skip, size=x.shape[2:], mode='bilinear', align_corners=True)
+                x = torch.cat((sip, x), dim=1)
         return x
 
 class Unet(nn.Module):
