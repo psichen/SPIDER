@@ -70,7 +70,7 @@ class DecoderBlock(nn.Module):
                 # Interpolate skip connection if spatial dims do not match
                 if skip.shape[2:] != x.shape[2:]:
                     skip = torch.nn.functional.interpolate(skip, size=x.shape[2:], mode='bilinear', align_corners=True)
-                x = torch.cat((sip, x), dim=1)
+                x = torch.cat((skip, x), dim=1)
         return x
 
 class Unet(nn.Module):
