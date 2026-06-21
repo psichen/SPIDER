@@ -9,14 +9,20 @@ matplotlib.rcParams['pdf.fonttype']=42
 from einops import rearrange
 
 class data_generator():
-    def __init__(self, raw_path, data_path, shift=None, window=.1, tl=.05, tr=.95, rl=0., rr=1., tem=.01, save=False, coef=None):
+    def __init__(self, raw_path, trace_file, retrace_file, data_path, shift=None, window=.1, tl=.05, tr=.95, rl=0., rr=1., tem=.01, save=False, coef=None):
         self.raw_path = raw_path
-        self.file_path = [f for f in os.listdir(self.raw_path) if f.endswith('tif')]
-        for f in self.file_path:
-            if '1ChRet' in f:
-                self.retrace = io.imread(os.path.join(self.raw_path, f))
-            else:
-                self.trace = io.imread(os.path.join(self.raw_path, f))
+        # self.file_path = [f for f in os.listdir(self.raw_path) if f.endswith('tif')]
+        self.trace_file = trace_file
+        self.retrace_file = retrace_file
+        self.trace = io.imread(os.path.join(self.raw_path, self.trace_file))
+        self.retrace = io.imread(os.path.join(self.raw_path, self.retrace_file))
+
+        # for f in self.file_path:
+        #     if '1ChRet' in f:
+        #         self.retrace = io.imread(os.path.join(self.raw_path, f))
+        #     else:
+        #         self.trace = io.imread(os.path.join(self.raw_path, f))
+
         self.data_path = data_path
         self.shift = shift # shift ratio
         self.window = window # window ratio
@@ -268,7 +274,7 @@ class data_generator():
         # plt.xlabel('trace column index')
         # plt.ylabel('retrace column index')
 
-        f, ax = plt.subplots(1,3, figsize=(9,3))
+        f, ax = plt.subplots(1,3, figsize=(14,5))
         ax[0].scatter(xx, yy-xx, c=ww, alpha=ww, marker=',')
         ax[0].plot(x_eval, y_eval)
         ax[0].set_xlabel('trace column index')
