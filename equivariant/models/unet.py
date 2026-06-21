@@ -69,7 +69,7 @@ class DecoderBlock(nn.Module):
                 skip = down_sampling_features.pop()
                 # Interpolate skip connection if spatial dims do not match
                 if skip.shape[2:] != x.shape[2:]:
-                    skip = torch.nn.functional.interpolate(skip, size=x.shape[2:], mode='bilinear', align_corners=True)
+                    skip = torch.nn.functional.interpolate(skip, size=x.shape[2:], mode="bilinear", align_corners=True)
                 x = torch.cat((skip, x), dim=1)
         return x
 
@@ -90,5 +90,8 @@ class Unet(nn.Module):
         x = self.decoder(x, down_sampling_features)
         y = self.final(x)
         if self.add_last:
+            # Interpolate residual_input if spatial dims do not match
+            if residual_input.shape[2:] != y.shape[2:]:
+                y = torch.nn.functional.interpolate(y, size=residual_input.shape[2:], mode="bilinear", align_corners=True)
             y += residual_input
         return y
