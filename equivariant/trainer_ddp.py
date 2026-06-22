@@ -1,5 +1,6 @@
 import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning) import os
+warnings.simplefilter(action='ignore', category=FutureWarning)
+import os
 import json
 import math
 from models.unet import Unet
