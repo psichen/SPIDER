@@ -127,10 +127,10 @@ class train_net():
                     pbar.update()
 
                     avg_loss = torch.tensor(0, dtype=torch.float32).to(rank)
-                    avg_loss += loss.item()
+                    avg_loss = avg_loss + loss.item()
                     dist.barrier()
                     dist.reduce(avg_loss, dst=0)
-                    avg_loss /= dist.get_world_size()
+                    avg_loss = avg_loss / dist.get_world_size()
                     lr = optimizer.state_dict()['param_groups'][0]['lr']
                     if rank == 0:
                         avg_loss_history.append(avg_loss.cpu().numpy())

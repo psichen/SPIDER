@@ -11,13 +11,13 @@ class ConvBlock(nn.Module):
         layers = [
             nn.Conv2d(in_channels=in_channels, out_channels=mid_channels, kernel_size=kernel_size, stride=stride, padding=padding, bias=False), 
             nn.BatchNorm2d(num_features=mid_channels),
-            nn.LeakyReLU(negative_slope=.02, inplace=True),
+            nn.LeakyReLU(negative_slope=.02, inplace=False),
         ]
 
         for _ in range(max(n_conv-1,0)):
             layers.append(nn.Conv2d(in_channels=mid_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride, padding=padding, bias=False))
             layers.append(nn.BatchNorm2d(num_features=out_channels))
-            layers.append(nn.LeakyReLU(negative_slope=.02, inplace=True))
+            layers.append(nn.LeakyReLU(negative_slope=.02, inplace=False))
 
         self.net = nn.Sequential(*layers)
 
@@ -93,5 +93,5 @@ class Unet(nn.Module):
             # Interpolate residual_input if spatial dims do not match
             if residual_input.shape[2:] != y.shape[2:]:
                 y = torch.nn.functional.interpolate(y, size=residual_input.shape[2:], mode="bilinear", align_corners=True)
-            y += residual_input
+            y = y + residual_input
         return y
