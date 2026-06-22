@@ -1,6 +1,5 @@
 import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-import os
+warnings.simplefilter(action='ignore', category=FutureWarning) import os
 import json
 import math
 from models.unet import Unet
@@ -94,7 +93,7 @@ class train_net():
 
         model = nn.SyncBatchNorm.convert_sync_batchnorm(self.model)
         model = model.to(rank)
-        ddp_model = DDP(model, device_ids=[rank])
+        ddp_model = DDP(model, device_ids=[rank], broadcast_buffers=False)
 
         data_A, _, _, _ = load_data(self.data_path, rank, self.augmentation, self.qmin, self.qmax, self.patch_size, self.overlap_th)
         dataset = imgs_sets(data_A)
