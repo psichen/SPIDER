@@ -9,7 +9,7 @@ from skimage import io
 import os
 import argparse
 from utils import *
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
 class pred_net():
     def __init__(self, checkpoint_idx, bs, checkpoint_path, data_path, prediction_path, patch_size=(64,64), overlap_th=.2, qmin=0, qmax=.99, scale_factor=3):
