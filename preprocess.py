@@ -230,8 +230,8 @@ class data_generator():
 
         sim_mat = self.similiarty_matrix()
         self.attn, self.attn_masked, self.mask = self.attn_matrix(sim_mat)
-        self.coef, self.xx, self.yy, self.ww = self.displacement_fit(attn_masked, mask)
-        xtm, xrm = self.boundary_mask(self.coef, mask) # x_trace_mask, x_retrace_mask
+        self.coef, self.xx, self.yy, self.ww = self.displacement_fit(self.attn_masked, self.mask)
+        xtm, xrm = self.boundary_mask(self.coef, self.mask) # x_trace_mask, x_retrace_mask
 
         self.x_eval = np.arange(self.w)[xtm]
         self.y_eval = np.poly1d(self.coef)(x_eval)
