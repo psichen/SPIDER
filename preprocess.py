@@ -234,7 +234,7 @@ class data_generator():
         xtm, xrm = self.boundary_mask(self.coef, self.mask) # x_trace_mask, x_retrace_mask
 
         self.x_eval = np.arange(self.w)[xtm]
-        self.y_eval = np.poly1d(self.coef)(x_eval)
+        self.y_eval = np.poly1d(self.coef)(self.x_eval)
 
         x1, x2 = self.displacement_compensate(self.coef, xtm, xrm)
         imgs1 = self.trace[...,xtm].copy()
