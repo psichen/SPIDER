@@ -12,7 +12,7 @@ import torch.multiprocessing as mp
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data.distributed import DistributedSampler
-from tqdm.notebook import tqdm
+from tqdm.auto import tqdm
 import argparse
 from utils import imgs_sets, load_data
 
