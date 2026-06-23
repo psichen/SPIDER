@@ -229,12 +229,12 @@ class data_generator():
         self.retrace = self.plane_flatten(self.retrace)
 
         sim_mat = self.similiarty_matrix()
-        attn, attn_masked, mask = self.attn_matrix(sim_mat)
-        self.coef, xx, yy, ww = self.displacement_fit(attn_masked, mask)
+        self.attn, self.attn_masked, self.mask = self.attn_matrix(sim_mat)
+        self.coef, self.xx, self.yy, self.ww = self.displacement_fit(attn_masked, mask)
         xtm, xrm = self.boundary_mask(self.coef, mask) # x_trace_mask, x_retrace_mask
 
-        x_eval = np.arange(self.w)[xtm]
-        y_eval = np.poly1d(self.coef)(x_eval)
+        self.x_eval = np.arange(self.w)[xtm]
+        self.y_eval = np.poly1d(self.coef)(x_eval)
 
         x1, x2 = self.displacement_compensate(self.coef, xtm, xrm)
         imgs1 = self.trace[...,xtm].copy()
@@ -246,21 +246,21 @@ class data_generator():
 
     def plot(self):
         f, ax = plt.subplots(1,3, figsize=(14,5))
-        ax[0].scatter(xx, yy-xx, c=ww, alpha=ww, marker=',')
-        ax[0].plot(x_eval, y_eval)
+        ax[0].scatter(self.xx, self.yy-self.xx, c=self.ww, alpha=self.ww, marker=',')
+        ax[0].plot(self.x_eval, self.y_eval)
         ax[0].set_xlabel('trace column index')
         ax[0].set_ylabel('displace pixels')
 
-        ax[1].imshow(attn_masked, interpolation=None, extent=[0,1,1,0])
-        ax[1].imshow(1-mask, "grey", interpolation=None, alpha=.1, extent=[0,1,1,0])
-        ax[1].plot(x_eval/self.w, (x_eval+y_eval)/self.w, color='white', linestyle='dashed', alpha=.8)
+        ax[1].imshow(self.attn_masked, interpolation=None, extent=[0,1,1,0])
+        ax[1].imshow(1-self.mask, "grey", interpolation=None, alpha=.1, extent=[0,1,1,0])
+        ax[1].plot(self.x_eval/self.w, (self.x_eval+self.y_eval)/self.w, color='white', linestyle='dashed', alpha=.8)
         ax[1].set_title('sliding window attention')
         ax[1].set_xlabel('trace column index')
         ax[1].set_ylabel('retrace column index')
 
-        ax[2].imshow(attn, interpolation=None, extent=[0,1,1,0])
-        ax[2].imshow(1-mask, "grey", interpolation=None, alpha=.1, extent=[0,1,1,0])
-        ax[2].plot(x_eval/self.w, (x_eval+y_eval)/self.w, color='white', linestyle='dashed', alpha=.8)
+        ax[2].imshow(self.attn, interpolation=None, extent=[0,1,1,0])
+        ax[2].imshow(1-self.mask, "grey", interpolation=None, alpha=.1, extent=[0,1,1,0])
+        ax[2].plot(self.x_eval/self.w, (self.x_eval+self.y_eval)/self.w, color='white', linestyle='dashed', alpha=.8)
         ax[2].set_title('global attention')
         ax[2].set_xlabel('trace column index')
         ax[2].set_ylabel('retrace column index')
