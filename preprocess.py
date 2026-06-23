@@ -9,19 +9,13 @@ matplotlib.rcParams['pdf.fonttype']=42
 from einops import rearrange
 
 class data_generator():
-    def __init__(self, raw_path, trace_file, retrace_file, data_path, shift=None, window=.1, tl=.05, tr=.95, rl=0., rr=1., tem=.01, save=False, coef=None):
+    def __init__(self, raw_path, trace_file, retrace_file, data_path, shift=None, window=.1, tl=.05, tr=.95, rl=0., rr=1., tem=.01, coef=None):
         self.raw_path = raw_path
         # self.file_path = [f for f in os.listdir(self.raw_path) if f.endswith('tif')]
         self.trace_file = trace_file
         self.retrace_file = retrace_file
         self.trace = io.imread(os.path.join(self.raw_path, self.trace_file))
         self.retrace = io.imread(os.path.join(self.raw_path, self.retrace_file))
-
-        # for f in self.file_path:
-        #     if '1ChRet' in f:
-        #         self.retrace = io.imread(os.path.join(self.raw_path, f))
-        #     else:
-        #         self.trace = io.imread(os.path.join(self.raw_path, f))
 
         self.data_path = data_path
         self.shift = shift # shift ratio
@@ -31,7 +25,6 @@ class data_generator():
         self.rl = rl # retrace left boundary ratio
         self.rr = rr # retrace right boundary ratio
         self.tem = tem # temperature in masked attn_matrix
-        self.save = save
         self.coef = coef
 
         assert self.trace.shape == self.retrace.shape
@@ -237,43 +230,21 @@ class data_generator():
 
         sim_mat = self.similiarty_matrix()
         attn, attn_masked, mask = self.attn_matrix(sim_mat)
-        coef, xx, yy, ww = self.displacement_fit(attn_masked, mask)
-        xtm, xrm = self.boundary_mask(coef, mask) # x_trace_mask, x_retrace_mask
+        self.coef, xx, yy, ww = self.displacement_fit(attn_masked, mask)
+        xtm, xrm = self.boundary_mask(self.coef, mask) # x_trace_mask, x_retrace_mask
 
         x_eval = np.arange(self.w)[xtm]
-        y_eval = np.poly1d(coef)(x_eval)
+        y_eval = np.poly1d(self.coef)(x_eval)
 
-        x1, x2 = self.displacement_compensate(coef, xtm, xrm)
+        x1, x2 = self.displacement_compensate(self.coef, xtm, xrm)
         imgs1 = self.trace[...,xtm].copy()
         imgs2 = self.retrace[...,xrm].copy()
 
-        x, imgs1, imgs2 = self.cross_interp(x1, x2, imgs1, imgs2)
-        imgs1 = self.plane_flatten(imgs1)
-        imgs2 = self.plane_flatten(imgs2)
+        self.x, imgs1, imgs2 = self.cross_interp(x1, x2, imgs1, imgs2)
+        self.imgs1 = self.plane_flatten(imgs1)
+        self.imgs2 = self.plane_flatten(imgs2)
 
-        # plot
-        # plt.figure()
-        # plt.scatter(xx, yy-xx, c=ww, alpha=ww, marker=',')
-        # plt.plot(x_eval, y_eval)
-        # plt.xlabel('trace column index')
-        # plt.ylabel('displace pixels')
-
-        # plt.figure()
-        # plt.imshow(attn_masked, interpolation=None, extent=[0,1,1,0])
-        # plt.imshow(1-mask, "grey", interpolation=None, alpha=.1, extent=[0,1,1,0])
-        # plt.plot(x_eval/self.w, (x_eval+y_eval)/self.w, color='white', linestyle='dashed', alpha=.8)
-        # plt.title('sliding window attention')
-        # plt.xlabel('trace column index')
-        # plt.ylabel('retrace column index')
-
-        # plt.figure()
-        # plt.imshow(attn, interpolation=None, extent=[0,1,1,0])
-        # plt.imshow(1-mask, "grey", interpolation=None, alpha=.1, extent=[0,1,1,0])
-        # plt.plot(x_eval/self.w, (x_eval+y_eval)/self.w, color='white', linestyle='dashed', alpha=.8)
-        # plt.title('global attention')
-        # plt.xlabel('trace column index')
-        # plt.ylabel('retrace column index')
-
+    def plot(self):
         f, ax = plt.subplots(1,3, figsize=(14,5))
         ax[0].scatter(xx, yy-xx, c=ww, alpha=ww, marker=',')
         ax[0].plot(x_eval, y_eval)
@@ -296,19 +267,21 @@ class data_generator():
 
         plt.show()
 
-        if self.save:
-            if not os.path.exists(self.data_path):
-                os.makedirs(self.data_path)
-            np.savetxt(os.path.join(self.data_path, 'x_coord.csv'), x, delimiter=',')
-            np.savetxt(os.path.join(self.data_path, 'fitting_parameters.csv'), coef, delimiter=',')
-            io.imsave(os.path.join(self.data_path, 'trace.tif'), imgs1.astype(np.float32), check_contrast=False)
-            io.imsave(os.path.join(self.data_path, 'retrace.tif'), imgs2.astype(np.float32), check_contrast=False)
+    def save(self):
+        if not os.path.exists(self.data_path):
+            os.makedirs(self.data_path)
+        np.savetxt(os.path.join(self.data_path, 'x_coord.csv'), self.x, delimiter=',')
+        np.savetxt(os.path.join(self.data_path, 'fitting_parameters.csv'), self.coef, delimiter=',')
+        io.imsave(os.path.join(self.data_path, 'trace.tif'), self.imgs1.astype(np.float32), check_contrast=False)
+        io.imsave(os.path.join(self.data_path, 'retrace.tif'), self.imgs2.astype(np.float32), check_contrast=False)
 
-            io.imsave(os.path.join(self.data_path, 'overlap.tif'), np.concatenate(([np.mean(imgs1, axis=0)], [np.mean(imgs2, axis=0)]), axis=0).astype(np.float32), check_contrast=False)
+        io.imsave(os.path.join(self.data_path, 'overlap.tif'), np.concatenate(([np.mean(self.imgs1, axis=0)], [np.mean(self.imgs2, axis=0)]), axis=0).astype(np.float32), check_contrast=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'subpixel alignment of AFM columns between trace and retrace')
     parser.add_argument('-rp', '--raw_path', type=str, default='raw', help='raw images path')
+    parser.add_argument('-tf', '--trace_file', type=str, default='trace.tif', help='trace filename')
+    parser.add_argument('-rf', '--retrace_file', type=str, default='retrace.tif', help='retrace filename')
     parser.add_argument('-dp', '--data_path', type=str, default='datasets', help='dataset path for training')
     parser.add_argument('-sf', '--shift', type=float, default=None, help='attention area shift')
     parser.add_argument('-w', '--window', type=float, default=.1, help='attention window size')
@@ -317,12 +290,13 @@ if __name__ == '__main__':
     parser.add_argument('-rl', '--retrace_left', type=float, default=0., help='retrace left boundary ratio')
     parser.add_argument('-rr', '--retrace_right', type=float, default=1., help='retrace right boundary ratio')
     parser.add_argument('-t', '--temperature', type=float, default=.01, help='temperature in attention')
-    parser.add_argument('-s', '--save', action='store_true', help='save resluts')
     parser.add_argument('-c', '--coef', nargs='+', type=float, help='predefined coefficients')
     opt = parser.parse_args()
 
     data_gen = data_generator(
             raw_path = opt.raw_path,
+            trace_file = opt.trace_file,
+            retrace_file = opt.retrace_file,
             data_path = opt.data_path,
             shift = opt.shift,
             window = opt.window,
@@ -331,7 +305,6 @@ if __name__ == '__main__':
             rl = opt.retrace_left,
             rr = opt.retrace_right,
             tem = opt.temperature,
-            save = opt.save,
             coef = opt.coef,
             )
     data_gen.generate()
