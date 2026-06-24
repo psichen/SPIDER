@@ -11,7 +11,6 @@ from einops import rearrange
 class data_generator():
     def __init__(self, raw_path, trace_file, retrace_file, data_path, shift=None, window=.1, tl=.05, tr=.95, rl=0., rr=1., tem=.01, coef=None):
         self.raw_path = raw_path
-        # self.file_path = [f for f in os.listdir(self.raw_path) if f.endswith('tif')]
         self.trace_file = trace_file
         self.retrace_file = retrace_file
         self.trace = io.imread(os.path.join(self.raw_path, self.trace_file))
@@ -291,6 +290,8 @@ if __name__ == '__main__':
     parser.add_argument('-rr', '--retrace_right', type=float, default=1., help='retrace right boundary ratio')
     parser.add_argument('-t', '--temperature', type=float, default=.01, help='temperature in attention')
     parser.add_argument('-c', '--coef', nargs='+', type=float, help='predefined coefficients')
+    parser.add_argument('-p', '--plot', action='store_true', help='plot results')
+    parser.add_argument('-s', '--save', action='store_true', help='save results')
     opt = parser.parse_args()
 
     data_gen = data_generator(
@@ -308,3 +309,7 @@ if __name__ == '__main__':
             coef = opt.coef,
             )
     data_gen.generate()
+    if opt.plot:
+        data_gen.plot()
+    if opt.save:
+        data_gen.save()
