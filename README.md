@@ -1,6 +1,6 @@
 <p>
   <h1 align="center">SPIDER</h1>
-  <h5 align="center">Scanning Probe microscopy Image DEnoising and Restoration</h5>
+  <h3 align="center">Scanning Probe microscopy Image DEnoising and Restoration</h3>
 </p>
 
 ![Logo](imgs/logo.png)
@@ -38,6 +38,8 @@ First, hysteresis effect is corrected for AFM trace/retrace images to generate i
 python preprocess.py [OPTIONS]
 ```
 
+Some important arguments are listed:
+
 | Argument | Short | Type | Default | Description |
 | --- | --- | --- | --- | --- |
 | `--raw_path` | `-rp` | str | 'raw' | path to raw images |
@@ -48,14 +50,11 @@ python preprocess.py [OPTIONS]
 | `--window` | `-w` | float | .1 | attention window size |
 | `--trace_left` | `-tl` | float | .05 | trace left boundary ratio |
 | `--trace_right` | `-tr` | float | .95 | trace right boundary ratio |
-| `--retrace_left` | `-rl` | float | 0. | retrace left boundary ratio |
-| `--retrace_right` | `-rr` | float | 1. | retrace right boundary ratio |
-| `--temperature` | `-t` | float | .01 | temperature in attention |
-| `--coef` | `-c` | float list | | predefined coefficients |
+| `--coef` | `-c` | float[3] | | predefined quadratic coefficients |
 | `--plot` | `-p` | flag | | plot results if present |
 | `--save` | `-s` | flag | | save results in the `data_path` if present |
 
-The mismatch between trace columns and retrace columns is non-linear and fitted by a quadratic function.
+The mismatch between trace columns and retrace columns is non-linear and fitted by a quadratic function. The script will give the x- and y-coordiate of the apex of the quadratic curve, representing the linear component of the mismatch between trace columns and retrace columns. The quadratic parameters will be given too for the non-linear mismatch correction.
 
 Example:
 ```bash
@@ -83,8 +82,28 @@ Because the hysteresis effect is localized, *i.e.*, the trace columns and the re
 
 The right panel shows the global attention distribution. When images experience an extremely low signal-to-noise ratio (SNR), the fitting process from gloal attention might be affected by the broad attention spread resulting from self-similar noises.
 
-## 💻 Training
+Corrected trace/retrace image pairs at sub-pixel level will be saved in the `data_path` for the following self-supervised training.
 
-## 💡 Inference
+## 💻 Training
+SPIDER supports multi-GPU training using PyTorch Distributed Data Parallel (DDP):
+
+```bash
+python trainer_ddp.py [OPTIONS]
+```
+
+Some important arguments are listed:
+
+| Argument | Short | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `--data_path` | `-dp` | str | 'datasets' | path to training datasets |
+| `--checkpoint_path` | `-cp` | str | 'checkpoints' | path to checkpoints |
+| `--batch_size` | `-b` | int | 512 | number of images processed in each iteration |
+| `--epochs` | `-e` | int | None | total number of training epochs |
+| `--iteration` | `-it` | int | 200 | total number of training iterations |
+| `--augmentation` | `-a` | flag | | perform data augmentation if present |
+| `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
+| `--ensembles` | `-n` | int | 3 | number of emsemble learnings |
+
+## 💡 Prediction
 
 ## 🔖 Citations
