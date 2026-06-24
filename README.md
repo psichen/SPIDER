@@ -1,6 +1,6 @@
 <p>
   <h1 align="center">SPIDER</h1>
-  <h5 align="center">Scanning Probe microscopy Image DEnoising and Restoration</h5>
+  <h3 align="center">Scanning Probe microscopy Image DEnoising and Restoration</h3>
 </p>
 
 ![Logo](imgs/logo.png)
