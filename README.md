@@ -54,7 +54,7 @@ Some important arguments are listed:
 | `--plot` | `-p` | flag | | plot results if present |
 | `--save` | `-s` | flag | | save results in the `data_path` if present |
 
-The mismatch between trace columns and retrace columns is non-linear and fitted by a quadratic function. The script will give the x- and y-coordiate of the apex of the quadratic curve, representing the linear component of the mismatch between trace columns and retrace columns. The quadratic parameters will be given too for the non-linear mismatch correction.
+The mismatch between trace columns and retrace columns is non-linear and fitted by a quadratic function. The script will give the x- and y-coordiate of the apex of the quadratic curve, representing the linear component of the mismatch. The quadratic parameters will be given too for the non-linear mismatch correction.
 
 Example:
 ```bash
@@ -85,11 +85,12 @@ The right panel shows the global attention distribution. When images experience 
 Corrected trace/retrace image pairs at sub-pixel level will be saved in the `data_path` for the following self-supervised training.
 
 ## 💻 Training
-SPIDER supports multi-GPU training using PyTorch Distributed Data Parallel (DDP):
+Two models are trained independently in the script to denoise trace based on retrace (r2t) and denoise retrace based on trace (t2r).
 
 ```bash
 python trainer_ddp.py [OPTIONS]
 ```
+SPIDER supports multi-GPU training using PyTorch Distributed Data Parallel (DDP).
 
 Some important arguments are listed:
 
@@ -103,6 +104,9 @@ Some important arguments are listed:
 | `--augmentation` | `-a` | flag | | perform data augmentation if present |
 | `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
 | `--ensembles` | `-n` | int | 3 | number of emsemble learnings |
+| `--world_size` | `-ws` | int | `torch.cuda.device_count()` | number of GPUs |
+
+The training script will generate `hyperparams.txt`, `.pth` checkpoint, updated learning rates and loss values in the `checkpoint_path`.
 
 ## 💡 Prediction
 

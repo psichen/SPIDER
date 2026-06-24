@@ -205,9 +205,7 @@ if __name__ == "__main__":
     parser.add_argument("--b1", type=float, default=0.9)
     parser.add_argument("--b2", type=float, default=0.999)
     parser.add_argument("-n", "--ensembles", type=int, default=3)
-    parser.add_argument(
-        "-ws", "--world_size", type=int, default=torch.cuda.device_count()
-    )
+    parser.add_argument("-ws", "--world_size", type=int, default=torch.cuda.device_count())
     opt = parser.parse_args()
     assert opt.world_size <= torch.cuda.device_count()
     if len(opt.patch_size) == 1:
