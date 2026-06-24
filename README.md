@@ -1,4 +1,7 @@
-# 🕷️ SPIDER: Scanning Probe microscopy Image DEnoising and Restoration
+<p>
+  <h1 align="center">SPIDER</h1>
+  <h5 align="center">Scanning Probe microscopy Image DEnoising and Restoration</h5>
+</p>
 
 ![Logo](imgs/logo.png)
 
