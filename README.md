@@ -93,7 +93,7 @@ The model is trained by minimizing the self-supervised loss, *e.g.*, when the ra
 L_{r2t} = \Vert f_\theta(T) - R \Vert ^2
 ```
 
-Because $f_\theta$ is $\mathcal{J}$-invariant<sup>4</sup>, the function output $f_\theta(T) - R_0$ is independent from the retrace noise $R-R_0$, so $L_{r2t}$ becomes,
+Because $f_\theta$ is $\mathcal{J}$-invariant<sup>4</sup>, the difference between the function output and the clean retrace $f_\theta(T) - R_0$ is independent from the retrace noise $R-R_0$, so $L_{r2t}$ becomes,
 
 ```math
 L_{r2t} = \Vert f_\theta(T) - R_0 \Vert ^2 + \Vert R - R_0 \Vert ^2
@@ -112,7 +112,7 @@ Some important arguments are listed:
 | --- | --- | --- | --- | --- |
 | `--data_path` | `-dp` | str | 'datasets' | path to training datasets |
 | `--checkpoint_path` | `-cp` | str | 'checkpoints' | path to checkpoints |
-| `--batch_size` | `-b` | int | 512 | number of images processed in each iteration |
+| `--batch_size` | `-b` | int | 512 | number of images processed per iteration |
 | `--epochs` | `-e` | int | None | total number of training epochs |
 | `--iteration` | `-it` | int | 200 | total number of training iterations |
 | `--augmentation` | `-a` | flag | | perform data augmentation if present |
