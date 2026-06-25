@@ -185,11 +185,12 @@ For `equivariant/predictor_ddp.py`:
 | `--scale_factor` | `-s` | int | 3 | scale factor in the slow-scan axis |
 | `--world_size` | `-ws` | int | available GPUs | number of GPUs |
 
-## 🔓 License
-
 ## 🔖 Reference
 
 1. Sichen Pan, Simon Scheuring. "Self-supervised denoising and restoration method for atomic force microscopy" In review (2026)
 2. Lehtinen, Jaakko, et al. "Noise2Noise: Learning image restoration without clean data." arXiv preprint arXiv:1803.04189 (2018).
 3. Kubo, Shintaroh, et al. "Removing the parachuting artifact using two-way scanning data in high-speed atomic force microscopy." Biophysics and physicobiology 20.1 (2023): e200006.
 4. Batson, Joshua, and Loic Royer. "Noise2self: Blind denoising by self-supervision." International conference on machine learning. PMLR, 2019.
+
+---
+SPIDER is released under the Apache License, Version 2.0 (see LICENSE file).
