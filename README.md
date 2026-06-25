@@ -128,13 +128,62 @@ The training script will generate `hyperparams.txt`, `.pth` checkpoint, updated 
 
 ### Ensemble learning
 
-## 💡 Prediction
+## 💡 Prediction & Postprocessing
+
+```bash
+python predictor_ddp.py [OPTIONS]
+python postprocess.py
+```
+
+Some important arguments are listed:
+
+| Argument | Short | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `--data_path` | `-dp` | str | 'datasets' | path to training datasets |
+| `--checkpoint_path` | `-cp` | str | 'checkpoints' | path to checkpoints |
+| `--prediction_path` | `-pp` | str | 'predictions' | path to predictions |
+| `--batch_size` | `-b` | int | 512 | number of images processed per iteration |
+| `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
+| `--world_size` | `-ws` | int | available GPUs | number of GPUs |
 
 ### Pixelization
 
 ### 3D pointcloud
 
 ## 🌀 Equivariant restoration
+Because samples are generally distributed randomly on the substrate, the underlying structures are expected to exhibit identical spatial information in both the fast- and slow-scan axes. However, the distinct noise characteristics of the two axes and the raster-scanning process break this symmetry in spatial resolution. SPIDER suppresses structural noises and leverages the recovered information in the fast-scan axis to reconstruct the spatial information in the slow-scan axis, thereby enabling self-supervised restoration and enhancement of the slow-scan resolution.
+
+```bash
+python equivariant/trainer_ddp.py [OPTIONS]
+python equivariant/predictor_ddp.py [OPTIONS]
+```
+
+Some important arguments are listed:
+
+For `equivariant/trainer_ddp.py`:
+| Argument | Short | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `--data_path` | `-dp` | str | 'datasets' | path to training datasets |
+| `--checkpoint_path` | `-cp` | str | 'checkpoints' | path to checkpoints |
+| `--batch_size` | `-b` | int | 512 | number of images processed per iteration |
+| `--epochs` | `-e` | int | None | total number of training epochs |
+| `--iteration` | `-it` | int | 200 | total number of training iterations |
+| `--augmentation` | `-a` | flag | | perform data augmentation if present |
+| `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
+| `--scale_factor` | `-s` | int | 3 | scale factor in the slow-scan axis |
+| `--loss_weight` | `-w` | float | .9 | weight between consistency loss and equivariance loss |
+| `--world_size` | `-ws` | int | available GPUs | number of GPUs |
+
+For `equivariant/predictor_ddp.py`:
+| Argument | Short | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `--data_path` | `-dp` | str | 'datasets' | path to training datasets |
+| `--checkpoint_path` | `-cp` | str | 'checkpoints' | path to checkpoints |
+| `--prediction_path` | `-pp` | str | 'predictions' | path to predictions |
+| `--batch_size` | `-b` | int | 512 | number of images processed per iteration |
+| `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
+| `--scale_factor` | `-s` | int | 3 | scale factor in the slow-scan axis |
+| `--world_size` | `-ws` | int | available GPUs | number of GPUs |
 
 ## 🔓 License
 
