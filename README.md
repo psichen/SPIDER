@@ -171,7 +171,7 @@ For `equivariant/trainer_ddp.py`:
 | `--augmentation` | `-a` | flag | | perform data augmentation if present |
 | `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
 | `--scale_factor` | `-s` | int | 3 | scale factor in the slow-scan axis |
-| `--loss_weight` | `-w` | float | .9 | weight between consistency loss and equivariance loss |
+| `--loss_weight` | `-w` | float | .9 | weight in the loss function |
 | `--world_size` | `-ws` | int | available GPUs | number of GPUs |
 
 For `equivariant/predictor_ddp.py`:
