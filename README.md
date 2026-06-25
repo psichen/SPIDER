@@ -122,13 +122,14 @@ Some important arguments are listed:
 | `--ensembles` | `-n` | int | 3 | number of emsemble learnings |
 | `--world_size` | `-ws` | int | available GPUs | number of GPUs |
 
-The training script will generate `hyperparams.txt`, `.pth` checkpoint, updated learning rates and loss values in the `checkpoint_path`.
+The script `trainer_ddp.py` will generate `hyperparams.txt`, `.pth` checkpoint, updated learning rates and loss values in the `checkpoint_path`.
 
 ### Augmentation
 
 ### Ensemble learning
 
 ## 💡 Prediction & Postprocessing
+When training is completed, one can use the same dataset to get the predicted output,
 
 ```bash
 python predictor_ddp.py [OPTIONS]
@@ -145,6 +146,8 @@ Some important arguments are listed:
 | `--batch_size` | `-b` | int | 512 | number of images processed per iteration |
 | `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
 | `--world_size` | `-ws` | int | available GPUs | number of GPUs |
+
+The script `predictor_ddp.py` will go through both *r2t* and *t2r* models in all ensemble results.
 
 ### Pixelization
 
