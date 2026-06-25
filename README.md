@@ -5,8 +5,10 @@
 
 ![Logo](imgs/logo.png)
 
-## 👀 Introduction
-SPIDER is a self-supervised framework for denoising atomic force microscopy (AFM) and other scanning probe microscopy (SPM) images using paired trace and retrace scans. The method utilizes the spatial redundancy of raster-scanning and learns the underlying surface signals while suppressing independent noises  without requiring clean ground-truth images.
+## 🕷 Introduction
+SPIDER is a self-supervised framework for denoising atomic force microscopy (AFM) and other scanning probe microscopy (SPM) images using paired trace and retrace scans<sup>1</sup>. The method utilizes the spatial redundancy of raster-scanning and learns the underlying surface signals while suppressing independent noises  without requiring clean ground-truth images<sup>2</sup>.
+
+
 
 ## 🛠 Installation
 We provide a Google Colab notebook for easy use. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/psichen/SPIDER/blob/main/SPIDER_colab.ipynb)
@@ -54,7 +56,7 @@ Some important arguments are listed:
 | `--plot` | `-p` | flag | | plot results if present |
 | `--save` | `-s` | flag | | save results in the `data_path` if present |
 
-The mismatch between trace columns and retrace columns is non-linear and fitted by a quadratic function. The script will give the x- and y-coordiate of the apex of the quadratic curve, representing the linear component of the mismatch. The quadratic parameters will be given too for the non-linear mismatch correction.
+The mismatch between trace columns and retrace columns is non-linear<sup>3</sup> and fitted by a quadratic function. The script will give the x- and y-coordiate of the apex of the quadratic curve, representing the linear component of the mismatch. The quadratic parameters will also be given for the non-linear mismatch correction.
 
 Example:
 ```bash
@@ -85,7 +87,19 @@ The right panel shows the global attention distribution. When images experience 
 Corrected trace/retrace image pairs at sub-pixel level will be saved in the `data_path` for the following self-supervised training.
 
 ## 💻 Training
-Two models are trained independently in the script to denoise trace based on retrace (r2t) and denoise retrace based on trace (t2r).
+The model is trained by minimizing the self-supervised loss, *e.g.*, when the raw trace $T$ is denoised based on raw retrace $R$,
+
+```math
+L_{r2t} = \Vert f_\theta(T) - R \Vert ^2
+```
+
+Because $f_\theta$ is $\mathcal{J}$-invariant<sup>4</sup>, the function output $f_\theta(T) - R_0$ is independent from the retrace noise $R-R_0$, so $L_{r2t}$ becomes,
+
+```math
+L_{r2t} = \Vert f_\theta(T) - R_0 \Vert ^2 + \Vert R - R_0 \Vert ^2
+```
+
+The training script will train two models separately to denoise trace based on retrace (*r2t*) and denoise retrace based on trace (*t2r*), respectively.
 
 ```bash
 python trainer_ddp.py [OPTIONS]
@@ -104,10 +118,17 @@ Some important arguments are listed:
 | `--augmentation` | `-a` | flag | | perform data augmentation if present |
 | `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
 | `--ensembles` | `-n` | int | 3 | number of emsemble learnings |
-| `--world_size` | `-ws` | int | `torch.cuda.device_count()` | number of GPUs |
+| `--world_size` | `-ws` | int | available GPUs | number of GPUs |
 
 The training script will generate `hyperparams.txt`, `.pth` checkpoint, updated learning rates and loss values in the `checkpoint_path`.
 
 ## 💡 Prediction
 
-## 🔖 Citations
+## 🔓 License
+
+## 🔖 Reference
+
+1. Sichen Pan, Simon Scheuring. "Self-supervised denoising and restoration method for atomic force microscopy" In review (2026)
+2. Lehtinen, Jaakko, et al. "Noise2Noise: Learning image restoration without clean data." arXiv preprint arXiv:1803.04189 (2018).
+3. Kubo, Shintaroh, et al. "Removing the parachuting artifact using two-way scanning data in high-speed atomic force microscopy." Biophysics and physicobiology 20.1 (2023): e200006.
+4. Batson, Joshua, and Loic Royer. "Noise2self: Blind denoising by self-supervision." International conference on machine learning. PMLR, 2019.
