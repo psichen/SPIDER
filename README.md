@@ -90,14 +90,16 @@ Corrected trace/retrace image pairs at sub-pixel level will be saved in the `dat
 The model is trained by minimizing the self-supervised loss, *e.g.*, when the raw trace $T$ is denoised based on raw retrace $R$,
 
 ```math
-L_{r2t} = \Vert f_\theta(T) - R \Vert ^2
+L_{r2t} = \mathbb{E} \Vert f_\theta(T) - R \Vert ^2
 ```
 
 Because $f_\theta$ is $\mathcal{J}$-invariant<sup>4</sup>, the difference between the function output and the clean retrace $f_\theta(T) - R_0$ is independent from the retrace noise $R-R_0$, so $L_{r2t}$ becomes,
 
 ```math
-L_{r2t} = \Vert f_\theta(T) - R_0 \Vert ^2 + \Vert R - R_0 \Vert ^2
+L_{r2t} = \mathbb{E} \Vert f_\theta(T) - R_0 \Vert ^2 + \mathbb{E} \Vert R - R_0 \Vert ^2
 ```
+
+For a given dataset with constant noise variance, one may find the optimal denoising function $f_\theta$ by minimizing the self-supervised loss.
 
 The training script will train two models separately to denoise trace based on retrace (*r2t*) and denoise retrace based on trace (*t2r*), respectively.
 
@@ -122,7 +124,17 @@ Some important arguments are listed:
 
 The training script will generate `hyperparams.txt`, `.pth` checkpoint, updated learning rates and loss values in the `checkpoint_path`.
 
+### Augmentation
+
+### Ensemble learning
+
 ## 💡 Prediction
+
+### Pixelization
+
+### 3D pointcloud
+
+## 🌀 Equivariant restoration
 
 ## 🔓 License
 
