@@ -125,19 +125,30 @@ Some important arguments are listed:
 The script `trainer_ddp.py` will generate `hyperparams.txt`, `.pth` checkpoint, updated learning rates and loss values in the `checkpoint_path`.
 
 ### Augmentation
+Conventional data augmentation applies random rotation and flipping to images. However, random rotation changes the structural signal and noise of SPM images and flipping changes the handedness of the detected samples. In SPIDER denoising, the data augmentation is performed in such a way that the retrace is rotated by 180° and used as the augmented trace, and *vice versa*. For example,
+
+```math
+L_{r2t} = \mathbb{E} \Vert f(x) - y \Vert
+```
+where $x \in \{T, \mathcal{R}_{180°} (R) \}$ and $y \in \{R, \mathcal{R}_{180°} (T) \}$, respectively.
 
 ### Ensemble learning
+
+
+### Iteration
+TBD
 
 ## 💡 Prediction & Postprocessing
 When training is completed, one can use the same dataset to get the predicted output,
 
 ```bash
 python predictor_ddp.py [OPTIONS]
-python postprocess.py
+python postprocess.py [OPTIONS]
 ```
 
 Some important arguments are listed:
 
+For `predictor_ddp.py`:
 | Argument | Short | Type | Default | Description |
 | --- | --- | --- | --- | --- |
 | `--data_path` | `-dp` | str | 'datasets' | path to training datasets |
@@ -147,11 +158,19 @@ Some important arguments are listed:
 | `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
 | `--world_size` | `-ws` | int | available GPUs | number of GPUs |
 
-The script `predictor_ddp.py` will go through both *r2t* and *t2r* models in all ensemble results.
+For `postprocess.py`:
+| Argument | Short | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `--data_path` | `-dp` | str | 'datasets' | path to training datasets |
+| `--prediction_path` | `-pp` | str | 'predictions' | path to predictions |
+
+The script `predictor_ddp.py` will go through both *r2t* and *t2r* models from all ensemble results, and generate the denoised results in the corresponding folders. The script `postprocess.py` will average results over ensembles from both *r2t* and *t2r* models, and apply a minimum projection to remove the parachuting effect and get the final result.
 
 ### Pixelization
+Final results can be rescaled into linear scale according to hysteresis curves and displayed as 2-dimensional (2D) bitmaps (*i.e.*, `output_last_pix.tif` by default).
 
-### 3D pointcloud
+### 3D pointcloud (optional)
+Final results can also be rendered as 3-dimensional (3D) pointclouds, where each point represents an experiment detection.
 
 ## 🌀 Equivariant restoration
 Because samples are generally distributed randomly on the substrate, the underlying structures are expected to exhibit identical spatial information in both the fast- and slow-scan axes. However, the distinct noise characteristics of the two axes and the raster-scanning process break this symmetry in spatial resolution. SPIDER suppresses structural noises and leverages the recovered information in the fast-scan axis to reconstruct the spatial information in the slow-scan axis, thereby enabling self-supervised restoration and enhancement of the slow-scan resolution.
