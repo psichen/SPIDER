@@ -130,7 +130,7 @@ Conventional data augmentation applies random rotation and flipping to images. H
 ```math
 L_{r2t} = \mathbb{E} \Vert f(x) - y \Vert
 ```
-where $x \in \left \{ T, \mathcal{R}_{180°} (R) \right \}$ and $y \in \left \{ R, \mathcal{R}_{180°} (T) \right \}$, respectively.
+where $x \in \left \{ T, R^{180°} \right \}$ and $y \in \left \{ R, T^{180°} \right \}$, respectively.
 
 ### Ensemble learning
 
