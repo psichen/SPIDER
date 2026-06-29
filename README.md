@@ -132,12 +132,6 @@ L_{r2t} = \mathbb{E} \Vert f(x) - y \Vert
 ```
 where $x \in \\{ T, R^{180°} \\}$ and $y \in \\{ R, T^{180°} \\}$, respectively.
 
-### Ensemble learning
-
-
-### Iteration
-TBD
-
 ## 💡 Prediction & Postprocessing
 When training is completed, one can use the same dataset to get the predicted output,
 
@@ -206,6 +200,14 @@ For `equivariant/predictor_ddp.py`:
 | `--patch_size` | `-ps` | int[1 or 2] | 64 | image patch size for training |
 | `--scale_factor` | `-s` | int | 3 | scale factor in the slow-scan axis |
 | `--world_size` | `-ws` | int | available GPUs | number of GPUs |
+
+Specifically, the width and height of the `patch_size` should match the `scale_factor`, *e.g.*, when the `scale_factor` is 4, the `patch_size` should be `(16, 64)`.
+
+Example:
+```bash
+python equivariant/trainer_ddp.py -s 4 -ps 16 64
+python equivariant/predictor_ddp.py -s 4 -ps 16 64
+```
 
 ## 🔖 Reference
 
