@@ -28,6 +28,8 @@ cd SPIDER
 
 2. Set up the environment and package dependencies:
 ```bash
+conda create -n spider
+conda activate spider
 pip install -r requirements.txt
 ```
 
