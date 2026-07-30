@@ -9,7 +9,6 @@ from skimage.registration import optical_flow_tvl1
 # import open3d as o3d
 
 
-# --------------------------------------------------
 def gaussian_mask(h, w, sigma=1 / 3):
     y = np.linspace(-1, 1, h)
     x = np.linspace(-1, 1, w)
@@ -158,10 +157,6 @@ def load_data(
     return data_A, data_B, img_shape, mi, ma
 
 
-# ==================================================
-
-
-# --------------------------------------------------
 def pixelization(x, imgs):
     """
     average image columns if their x coordinates are within the interval of 1
@@ -203,10 +198,8 @@ def pixelization(x, imgs):
 # if down_sample is not None:
 # pcd = pcd.voxel_down_sample(down_sample)
 # return pcd
-# ==================================================
 
 
-# --------------------------------------------------
 def imgs_optical_flow(imgs):
     b, h, w = imgs.shape
     u_list = [np.zeros((h, w))]
@@ -242,10 +235,6 @@ def align_frames(imgs, u_list, v_list):  # I[t+1,h+u,w+v] = I[t,h,w]
     return imgs_pad
 
 
-# ==================================================
-
-
-# --------------------------------------------------
 def A5_groundtruth(trace, retrace, std_q=0.2):
     assert trace.ndim == 3
     assert trace.shape == retrace.shape
@@ -338,6 +327,3 @@ def calculate_ssim(src, tgt, norm=True, c=1e-7, eps=1e-20):
             )
 
     return np.mean(ssim)
-
-
-# ==================================================

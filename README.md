@@ -28,6 +28,8 @@ cd SPIDER
 
 2. Set up the environment and package dependencies:
 ```bash
+conda create -n spider
+conda activate spider
 pip install -r requirements.txt
 ```
 
@@ -211,7 +213,7 @@ python equivariant/predictor_ddp.py -s 4 -ps 16 64
 
 ## 🔖 Reference
 
-1. Sichen Pan, Simon Scheuring. "Self-supervised denoising and restoration method for atomic force microscopy" In review (2026)
+1. Sichen Pan, Simon Scheuring. "Self-supervised denoising and restoration method for atomic force microscopy" Accepted in Nature Communications (2026)
 2. Lehtinen, Jaakko, et al. "Noise2Noise: Learning image restoration without clean data." arXiv preprint arXiv:1803.04189 (2018).
 3. Kubo, Shintaroh, et al. "Removing the parachuting artifact using two-way scanning data in high-speed atomic force microscopy." Biophysics and physicobiology 20.1 (2023): e200006.
 4. Batson, Joshua, and Loic Royer. "Noise2self: Blind denoising by self-supervision." International conference on machine learning. PMLR, 2019.

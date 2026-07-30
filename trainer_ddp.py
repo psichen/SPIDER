@@ -1,20 +1,20 @@
+import argparse
+import json
+import math
+import os
+import torch
+import torch.distributed as dist
+import torch.multiprocessing as mp
+import torch.nn as nn
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data import DataLoader
+from torch.utils.data.distributed import DistributedSampler
+from tqdm.auto import tqdm
+from models.unet import Unet
+from utils import imgs_sets, load_data
 import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
-import os
-import json
-import math
-from models.unet import Unet
-import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader
-import torch.multiprocessing as mp
-import torch.distributed as dist
-from torch.nn.parallel import DistributedDataParallel as DDP
-from torch.utils.data.distributed import DistributedSampler
-from tqdm.auto import tqdm
-import argparse
-from utils import imgs_sets, load_data
 
 
 def setup(rank, world_size):
@@ -62,7 +62,6 @@ class train_net:
         if not os.path.exists(self.checkpoint_save_path):
             os.makedirs(self.checkpoint_save_path, exist_ok=True)
         self.model = Unet(filter_base=32, unet_depth=3)
-        # self.model = SwinIR(img_size=63, window_size=7, upscale=1, in_chans=1, upsampler='',)
         self.bs = bs
         self.epochs = epochs
         self.iteration = iteration
@@ -205,7 +204,9 @@ if __name__ == "__main__":
     parser.add_argument("--b1", type=float, default=0.9)
     parser.add_argument("--b2", type=float, default=0.999)
     parser.add_argument("-n", "--ensembles", type=int, default=3)
-    parser.add_argument("-ws", "--world_size", type=int, default=torch.cuda.device_count())
+    parser.add_argument(
+        "-ws", "--world_size", type=int, default=torch.cuda.device_count()
+    )
     opt = parser.parse_args()
     assert opt.world_size <= torch.cuda.device_count()
     if len(opt.patch_size) == 1:
