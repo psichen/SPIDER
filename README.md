@@ -8,7 +8,8 @@
 ## 🕷 Introduction
 SPIDER is a self-supervised framework for denoising atomic force microscopy (AFM) and other scanning probe microscopy (SPM) images using paired trace and retrace scans<sup>1</sup>. The method utilizes the spatial redundancy of raster-scanning and learns the underlying surface signals while suppressing independent noises  without requiring clean ground-truth images<sup>2</sup>.
 
-
+![Annexin V](imgs/A5.gif)
+![VIPP1](imgs/vipp1.gif)
 
 ## 🛠 Installation
 We provide a Google Colab notebook for easy use. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/psichen/SPIDER/blob/main/SPIDER_colab.ipynb)
@@ -213,7 +214,7 @@ python equivariant/predictor_ddp.py -s 4 -ps 16 64
 
 ## 🔖 Reference
 
-1. Sichen Pan, Simon Scheuring. "Self-supervised denoising and restoration method for atomic force microscopy" Accepted in Nature Communications (2026)
+1. Sichen Pan, Simon Scheuring. "Self-supervised denoising and restoration method for atomic force microscopy" Nature Communications (2026)
 2. Lehtinen, Jaakko, et al. "Noise2Noise: Learning image restoration without clean data." arXiv preprint arXiv:1803.04189 (2018).
 3. Kubo, Shintaroh, et al. "Removing the parachuting artifact using two-way scanning data in high-speed atomic force microscopy." Biophysics and physicobiology 20.1 (2023): e200006.
 4. Batson, Joshua, and Loic Royer. "Noise2self: Blind denoising by self-supervision." International conference on machine learning. PMLR, 2019.
